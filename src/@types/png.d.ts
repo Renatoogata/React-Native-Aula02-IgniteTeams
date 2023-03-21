@@ -1,0 +1,1 @@
+declare module '*.png' /* aceitar o tipo de imagem (png), para não dar erro na importação */
