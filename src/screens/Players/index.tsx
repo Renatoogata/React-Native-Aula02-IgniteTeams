@@ -1,11 +1,16 @@
+import { useState } from "react";
 import { FlatList } from "react-native";
-import { ButtonIcon } from "@components/ButtonIcon";
+
+import { Input } from "@components/Input";
+import { Filter } from "@components/Filter";
 import { Header } from "@components/Header";
 import { Highlight } from "@components/Highlight";
-import { Input } from "@components/Input";
-import { Container, Form, HeaderList, NumbersOfPlayers } from "./styles";
-import { Filter } from "@components/Filter";
-import { useState } from "react";
+import { ListEmpty } from "@components/ListEmpty";
+import { ButtonIcon } from "@components/ButtonIcon";
+import { PlayerCard } from "@components/PlayerCard";
+import { Button } from "@components/Button";
+
+import { Container, Form, HeaderList, NumberOfPlayers } from "./styles";
 
 export default function Players() {
     const [team, setTeam] = useState('Time A');
@@ -47,11 +52,38 @@ export default function Players() {
                     horizontal
                 />
 
-                <NumbersOfPlayers>
+                <NumberOfPlayers>
                     {players.length}
-                </NumbersOfPlayers>
+                </NumberOfPlayers>
             </HeaderList>
 
+
+            <FlatList
+                data={players}
+                keyExtractor={item => item}
+                renderItem={({ item }) => (
+                    <PlayerCard
+                        name={item}
+                        onRemove={() => { }}
+                    />
+                )}
+                contentContainerStyle={[
+                    { paddingBottom: 100 }, /* Colocando uma margem no fim da listagem parar mostrar para o usuario que a lista acabou */
+                    players.length === 0 && { flex: 1 } /* condicional para aplicar o flex: 1 */
+                ]}
+
+                ListEmptyComponent={() => (
+                    <ListEmpty
+                        message="Não há pessoas nesse time"
+                    />
+                )}
+                showsVerticalScrollIndicator={false}
+            />
+
+            <Button
+                title="Remover Turma"
+                type="SECONDARY"
+            />
         </Container>
     )
 }

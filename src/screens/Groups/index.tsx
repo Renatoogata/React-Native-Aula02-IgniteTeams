@@ -35,6 +35,7 @@ export default function Groups() {
                         message="Que tal cadastrar a primeira turma??"
                     />
                 )}
+                showsVerticalScrollIndicator={false}
             />
 
             <Button
