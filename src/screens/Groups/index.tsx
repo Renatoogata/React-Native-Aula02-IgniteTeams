@@ -31,6 +31,10 @@ export default function Groups() { /*Através do NavigationContainer(routes/inde
         }
     }
 
+    function handleOpenGroup(group: string) {
+        navigation.navigate('players', { group });
+    }
+
     useFocusEffect(useCallback(() => { /* qaundo o foco voltar para essa tela(Groups) o useFocusEffect vai ser disparado denovo */
         fetchGroups();
     }, []))
@@ -49,6 +53,7 @@ export default function Groups() { /*Através do NavigationContainer(routes/inde
                 renderItem={({ item }) => (
                     <GroupCard
                         title={item}
+                        onPress={() => handleOpenGroup(item)}
                     />
                 )}
                 contentContainerStyle={groups.length === 0 && { flex: 1 }} /*centralizar o ListEmpty*/
