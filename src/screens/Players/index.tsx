@@ -56,7 +56,6 @@ export default function Players() {
 
             newPlayerNameInputRef.current?.blur(); /* Tirar o foco do input */
 
-            setNewPlayerName('');
             fetchPlayerByTeam();
 
         } catch (error) {
@@ -66,6 +65,8 @@ export default function Players() {
                 console.log(error);
                 Alert.alert('Nova pessoa', 'Não foi possível adicionar.')
             }
+        } finally {
+            setNewPlayerName('');
         }
     }
 

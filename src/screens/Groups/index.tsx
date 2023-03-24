@@ -35,6 +35,7 @@ export default function Groups() { /*Através do NavigationContainer(routes/inde
             console.log(error)
             Alert.alert('Turmas', 'Não foi possível carregar turmas.')
         } finally { // independente se a função de groupsGetAll der erro ou não ele vai setar o setIsLoading para false
+
             setIsLoading(false);
         }
     }
