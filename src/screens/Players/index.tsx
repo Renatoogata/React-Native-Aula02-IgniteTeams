@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Alert, FlatList } from "react-native";
+import { useState, useEffect, useRef } from "react";
+import { Alert, FlatList, TextInput } from "react-native";
 import { useRoute } from "@react-navigation/native";
 
 import { AppError } from "@utils/AppError";
@@ -18,6 +18,7 @@ import { ButtonIcon } from "@components/ButtonIcon";
 import { PlayerCard } from "@components/PlayerCard";
 
 import { Container, Form, HeaderList, NumberOfPlayers } from "./styles";
+import { playerRemoveByGroup } from "@storage/player/playerRemoveByGroup";
 
 
 type RouteParams = {
@@ -33,6 +34,8 @@ export default function Players() {
     const route = useRoute(); /*useRoute permite acessar os parametros passados pela rota*/
     const { group } = route.params as RouteParams;
 
+    const newPlayerNameInputRef = useRef<TextInput>(null);
+
     async function handleAddPlayer() {
         if (newPlayerName.trim().length === 0) {
             return Alert.alert('Nova pessoa', 'Informe o nome da pessoa para adicionar.')
@@ -45,6 +48,10 @@ export default function Players() {
 
         try {
             await playerAddByGroup(newPlayer, group);
+
+            newPlayerNameInputRef.current?.blur(); /* Tirar o foco do input */
+
+            setNewPlayerName('');
             fetchPlayerByTeam();
 
         } catch (error) {
@@ -70,6 +77,28 @@ export default function Players() {
         }
     }
 
+    async function handlePlayerRemove(playerName: string) {
+        try {
+            Alert.alert("Remover", `Deseja remover a(o) ${playerName} do grupo?`, [
+                {
+                    text: 'Sim',
+                    onPress: async () => {
+                        await playerRemoveByGroup(playerName, group)
+                        fetchPlayerByTeam();
+                    },
+                },
+                {
+                    text: 'Não',
+                    style: 'cancel'
+                }
+            ])
+
+        } catch (error) {
+            console.log(error);
+            Alert.alert('Remover pessoa', 'Não foi possível remover essa pessoa')
+        }
+    }
+
     useEffect(() => {
         fetchPlayerByTeam();
     }, [team]);
@@ -87,9 +116,13 @@ export default function Players() {
 
             <Form>
                 <Input
+                    inputRef={newPlayerNameInputRef} /* Tirar o foco do input */
                     onChangeText={setNewPlayerName}
+                    value={newPlayerName}
                     placeholder="Nome da pessoa"
                     autoCorrect={false} /* corretor de texto desabilitado na hora de digitar */
+                    onSubmitEditing={handleAddPlayer} /* Usando o certinho do teclado executa a função */
+                    returnKeyType="done" /* auxilia a linha de cima */
                 />
 
                 <ButtonIcon
@@ -124,7 +157,7 @@ export default function Players() {
                 renderItem={({ item }) => (
                     <PlayerCard
                         name={item.name}
-                        onRemove={() => { }}
+                        onRemove={() => { handlePlayerRemove(item.name) }}
                     />
                 )}
                 contentContainerStyle={[
